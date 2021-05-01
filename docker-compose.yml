@@ -1,0 +1,44 @@
+version: 3
+services:
+    react:
+        build: ./react
+        container_name: react
+        ports: 
+            - '3001:3000'
+        volumes: 
+            - './react:/usr/src/app'
+        depends_on: 
+            - mysql
+        networks:
+            - NetFrontend
+            - netMysql
+
+    mysql:
+        image: mysql:5.7
+        container_name: mindset.mysql
+        # restart: unless-stopped
+        tty: true
+        environment:
+            MYSQL_DATABASE: test
+            MYSQL_USER: test
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+        networks:
+            - netMysql
+
+    # PhpMyAdmin
+    phpmyadmin:
+        image: adminer
+        container_name: mindset.phpmyadmin
+        # restart: unless-stopped
+        environment: 
+            - ADMINER_DEFAULT_DB_DRIVER=mysql
+            - ADMINER_DEFAULT_DB_HOST=mysql
+            - ADMINER_DEFAULT_DB_NAME=test
+            - ADMINER_DESIGN=nette
+        ports: 
+            - 3002:8080
+        depends_on: 
+            - mysql
+        networks:
+            - netMysql
